@@ -1,0 +1,196 @@
+{% extends "./base.html" %}
+
+{% block content %}
+<div>
+    <!-- MAIN -->
+    <h1>{{ selected_course }}</h1>
+    <div id="course-Info-table-container" class="main_section">
+        <table class="table-container">
+            <tr>
+                <th>Code:</th>
+                <td><p>{{ selected_course.code }}</p></td>
+            </tr>
+            <tr>
+                <th style="width: 110px;">Name:</th>
+                <td><p>{{ selected_course.name }}</p></td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td><p>{{ selected_course.description }}</p></td>
+            </tr>
+            <tr>
+                <th>Duration:</th>
+                <td><p>{{ selected_course.length_in_weeks }} weeks</p></td>
+            </tr>
+            <tr>
+                <th>Semester:</th>
+                <td><p>{{ selected_course.semester }}</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- REGISTRATION INFORMATION -->
+    {% if isRegistered != "BLOCKED" and role == "Student" and isRegistered != "APPROVED" %}
+    <div>
+        <h2>Registration</h2>
+        {% if isRegistered == "NOT REGISTERED" %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{RegisterButton.as_p}}
+            <input type="submit" value = "Register" class="button-active">
+            </form>
+        {% endif %}
+
+        {% if isRegistered == "PENDING" %}
+            <button type="button" disabled class="button-active">Registrating is Pending</button>
+        {% endif %}
+
+        {% if isRegistered == "DECLINED" %}
+            <button type="button" disabled class="button-active">Registration is Not Available</button>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if role == "Teacher" %}
+    <h2>Registrations</h2>
+    <div class="main_section" style="min-width: 700px">
+        {% if pending_registrations|length != 0%}
+            <table class="table-container">
+                <tr>
+                    <th>Student:</th>
+                    <th>Date:</th>
+                    <th>Status:</th>
+                    <th>Change:</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            {% for registration in pending_registrations %}
+                <tr>
+                    <td><p>{{ registration.student }}</p></td>
+                    <td><p>{{ registration.registration_date }}</p></td>
+                    <td><p>{{ registration.status }}</p></td>
+                    <td><a href="{% url 'registration_change_cv' registration.pk 'APPROVED'%}"><button type="button" class="button-active">Approve Registration</button></a></td>
+                    <td><a href="{% url 'registration_change_cv' registration.pk 'PENDING'%}"><button type="button" class="button-active">Remove Registration</button></a></td>
+                    <td><a href="{% url 'registration_change_cv' registration.pk 'DECLINED'%}"><button type="button" class="button-active-red">Decline Registration</button></a></td>
+                    <td><a href="{% url 'registration_change_cv' registration.pk 'BLOCKED'%}"><button type="button" class="button-active-red">Block Registration</button></a></td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+            <p><strong>No Current Registrations</strong></p>
+        {% endif %}
+    </div>
+    {% endif%}
+
+    <!-- DUE DATES -->
+    {% if role == "Teacher" %}
+        <h2>Due Dates</h2>
+        <div class="main_section">
+            {% if dueDates|length != 0 %}
+                <table class="table-container">
+                    <tr>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Due Date</th>
+                    </tr>
+                {% for date in dueDates %}
+                    <tr>
+                        <td><p>{{ date.type }}</p></td>
+                        <td><p>{{ date.title }}</p></td>
+                        <td><p>{{ date.description }}</p></td>
+                        <td><p>{{ date.date_due }}</p></td>
+                    </tr>
+                {% endfor %}
+                </table>
+            {% else %}
+                <p><strong>Nothing currently due</strong></p>
+            {% endif %}
+            <a href="/course_add_duedate/{{selected_course.pk}}"><button type="button" class="button-active">Add a new item</button></a>
+        </div>
+    {% endif %}
+
+    {% if role == "Student" and isRegistered == "APPROVED" %}
+        <h2>Due Dates</h2>
+        <div class="main_section">
+            <table class="table-container">
+                <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                </tr>
+            {% for date in dueDates %}
+                <tr>
+                    <td><p>{{ date.type }}</p></td>
+                    <td><p>{{ date.title }}</p></td>
+                    <td><p>{{ date.description }}</p></td>
+                    <td><p>{{ date.date_due }}</p></td>
+                </tr>
+            {% empty %}
+                <p>No items currently due</p>
+            {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    <!-- COURSE MATERIAL LINK -->
+    <div>
+        {% if role == "Teacher" %}
+            <h2>Course Material</h2>
+            <a href="/course_view_material/{{selected_course.pk}}"><button type="button" class="button-active">View Course Material</button></a>
+            <a href="/course_add_material/{{selected_course.pk}}"><button type="button" class="button-active">Add Course Material</button></a>
+        {% endif %}
+
+        {% if role == "Student" and isRegistered == "APPROVED" %}
+            <h2>Course Material</h2>
+            <a href="/course_view_material/{{selected_course.pk}}"><button type="button" class="button-active">View Course Material</button></a>
+        {% endif %}
+    </div>
+
+    <!-- COURSE CHAT LINK -->
+     {% if role == "Teacher" or isRegistered == "APPROVED" %}
+        <a href="/chat/{{selected_course.code}}"><h2 style="margin-bottom: 0">Course Chat Room</h2></a>
+     {% endif %}
+
+         <!-- COURSE FEEDBACK -->
+    <h2>Course Feedback</h2>
+    <div id="courseFeedback">
+        <p class="main_section"><strong>Average Rating: {{ average_rating }}</strong></p>
+
+        <!-- VIEW ALL THE FEEDABACK -->
+        <div>
+            {% for feedback in course_feedback %}
+            <div class="main_section">
+                <table class="table-container">
+                    <tr>
+                        <td style="width: 90px"><strong><p>Rating:</p></strong></td>
+                        <td><p>{{ feedback.rating }}</p></td>
+                    </tr>
+                    <tr>
+                        <td><strong><p>Feedback:</p></strong></td>
+                        <td><p>{{ feedback.feedback }}</p></td>
+                    </tr>
+                    <tr>
+                        <td><strong><p>Date Posted:</p></strong></td>
+                        <td><p>{{ feedback.date_posted }}</p></td>
+                    </tr>
+                </table>
+            </div>
+            {%  endfor %}
+        </div>
+
+        <!-- BUTTON TO ADD FEEDBACK -->
+        {% if isRegistered == "APPROVED" and role == "Student" %}
+            <button class="button-active" onclick="submit()">Add Feedback</button>
+            <script>
+                function submit(){
+                    link = '/feedback_add/{{selected_course.pk}}';
+                    window.location = link;
+                }
+            </script>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "./base.html" %}
+
+{% block content %}
+    <h1>Add Feedback:</h1>
+    <h2>{{ selected_course.name }} ({{ selected_course.code }})</h2>
+    <form method="POST" enctype="multipart/form-data" style="width:100%">
+        {% csrf_token %}
+        {{ form.course_id }}
+        {{ form.student_id }}
+        <table>
+            <tr>
+                <td><p>Add Feedback:</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.feedback }}</td>
+            </tr>
+            <tr>
+                <td><p>Choose Rating (0 - 5):</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.rating }}</td>
+            </tr>
+            <tr>
+                <td><input type="submit" value = "Submit" class="button-active"></td>
+            </tr>
+        </table>
+    </form>
+
+    <style>
+        textarea, input[name=rating] {
+            margin: 5px;
+            padding: 10px;
+            border: 2px solid #48752C;
+            border-radius: 10px;
+            text-align: left;
+            outline: none;
+        }
+        td {
+            border: none
+        }
+        table {
+            width: 100%
+        }
+    </style>
+
+{% endblock %}

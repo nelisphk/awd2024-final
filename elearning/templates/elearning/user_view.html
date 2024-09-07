@@ -1,0 +1,83 @@
+{% extends "./base.html" %}
+
+{% block content %}
+<!-- NEED TO MAKE IT SO THAT ONLY TEACHERS CAN ACCESS THIS PAGE -->
+    <div id="user_profile" style="display: flex; flex-direction: row;">
+        <div if="profile_photo">
+            {% if user_return_image %}
+            <img src="/media/{{user_return_image}}" style="height:250px;margin: 10px">
+            {% else %}
+            <img src="../../static/images/placeholder-profile.jpg" style="height:250px; margin: 20px">
+            {%endif%}
+        </div>
+        <div id="profile" class="main_section", style="text-align: left;">
+            {% if user_return.first_name %} 
+                <h1>{{ user_return.first_name }} {{ user_return.last_name }}</h1>
+            {% else %}
+                <h1>Username: {{ user_return }}</h1>
+            {% endif %}
+            <table class="table-container"> 
+                <tr><td><strong><p>Email:</p></strong></td><td><a href="mailto:{{ user_return.email }}"><p>{{ user_return.email }}</p></a></td></tr>
+                <tr><td><strong><p>Type of User:</p></strong></td><td><p>{{ user_return_role }}</p></td></tr>
+                <tr><td><strong><p>Date Joined:</p></strong></td><td><p>{{ user_return.date_joined }}</p></td></tr>
+                <tr><td><strong><p>Last Login:</p></strong></td><td><p>{{ user_return.last_login }}</p></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <h2>Status Updates:</h2>
+    <div id="userprofile-status-update-list" class="main_section">
+        {% if statuses|length != 0%}
+            {% for status in statuses %}
+            <table class="table-container">
+                <tr>
+                    <td style="width:70%"><p>{{ status.status }}</p></td>
+                    <td class="small_text" style="text-align: right;">(Updated: {{ status.date_added }})</td>
+                </tr>
+            </table>
+            {% empty %}
+                No Status Updates Available
+            {% endfor %}
+        {% else %}
+        <p>No Status Updates Available</p>
+        {% endif %}
+    </div>
+
+    <h2>Enrolled Courses:</h2>
+    <div id="userprofile-enrolled-courses-list" class="main_section">
+        {% if enrolled_courses|length != 0%}
+            {% for course in enrolled_courses %}
+            <table class="table-container">
+                <tr>
+                    <td style="width:70%"><p>{{ course.course }}</p></td>
+                    <td class="small_text" style="text-align: right;">(Enrolled: {{ course.registration_date }})</td>
+                </tr>
+            </table>
+            {% empty %}
+            This person is not enrolled in any courses
+            {% endfor %}
+        {% else %}
+        <p>This person is not enrolled in any courses</p>
+        {% endif %}
+    </div>
+
+    <h2>Upcoming Deadlines:</h2>
+    <div id="userprofile-deadlines-list" class="main_section">
+        {% if due_dates|length != 0%}
+            {% for item in due_dates %}
+            <table class="table-container">
+                <tr>
+                    <td style="width:30%"><p>{{ item.course_id }}</p></td>
+                    <td><p>{{ item.title }}</p></td>
+                    <td class="small_text" style="text-align: right;">(Due: {{ item.date_due }})</td>
+                </tr>
+            </table>
+            {% empty %}
+            This person is not enrolled in any courses
+            {% endfor %}
+        {% else %}
+        <p>This person is not enrolled in any courses</p>
+        {% endif %}
+    </div>
+
+{% endblock %}

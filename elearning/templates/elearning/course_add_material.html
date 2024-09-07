@@ -1,0 +1,81 @@
+{% extends "./base.html" %}
+
+{% block content %}
+    <h1>Add Material:</h1>
+    <h2>{{ selected_course.name }} ({{ selected_course.code }})</h2>
+    <form method="POST" enctype="multipart/form-data" style="width:100%">
+        {% csrf_token %}
+        {{ form.course_id }}
+        <table>
+            <tr>
+                <td><p>Type of Material:</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.type }}</td>
+            </tr>
+            <tr>
+                <td><p>Title:</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.title }}</td>
+            </tr>
+            <tr>
+                <td><p>Course Week:</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.week }}</td>
+            </tr>
+            <tr>
+                <td><p>Description:</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.description }}</td>
+            </tr>
+            <tr>
+                <td><p>File:</p></td>
+            </tr>
+            <tr>
+                <td>{{ form.file }}</td>
+            </tr>
+            <tr>
+                <td><input type="submit" value = "Add" class="button-active"></td>
+            </tr>
+        </table>
+    </form>
+
+    <style>
+        textarea, input[name=rating] {
+            margin: 5px;
+            padding: 10px;
+            border: 2px solid #48752C;
+            border-radius: 10px;
+            text-align: left;
+            outline: none;
+        }
+        td {
+            border: none
+        }
+        table {
+            width: 100%
+        }
+        input[type=file]{
+            align-self: center;
+            text-align: center;
+
+            margin: 5px;
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+
+            border-radius: 20px;
+            background-color: #48752C;
+            color: white;
+            transition-duration: 0.4s;
+
+            border: 2px solid #48752C;
+            border-radius: 10px;
+            outline: none;
+        }
+    </style>
+    
+{% endblock %}

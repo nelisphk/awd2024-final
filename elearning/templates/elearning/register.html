@@ -1,0 +1,39 @@
+{% include "./header.html" %}
+
+    <div id="login-body">
+        {% if registered %}
+            <p>Thank you for registering.</p>
+            <p>Click <a href="/">here</a> to go to the homepage.</p>
+        {% else %}
+        <h2>Register</h2>
+            <form id="login-form" method="post", action="/register/", enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>Email Address: </p>{{ user_form.email }}
+                <p>First Name: </p>{{ user_form.first_name }}
+                <p>Last Name: </p>{{ user_form.last_name }}
+
+                <p>User Name: </p>{{ user_form.username }}
+                <p>Password: </p>{{ user_form.password }}
+
+                <p>Profile Photo: </p>{{ profile_form.image }}
+
+                <!-- {{ user_form.as_p }}
+                {{ profile_form.as_p }} -->
+                <input id="login-sub" type="submit" name="submit" value="Register"/>
+            </form>
+            <div id="login-register-link">Already have an account? Click <a href="/login/">here</a> to login.</div>
+        {% endif %}
+    </div>
+
+    <style>
+        input{
+            margin: 5px;
+            padding: 10px;
+            border: 2px solid #48752C;
+            border-radius: 10px;
+            text-align: left;
+            outline: none;
+        }
+    </style>
+    
+{% include "./footer.html" %}

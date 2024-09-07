@@ -1,0 +1,100 @@
+{% extends "./base.html" %}
+
+{% block content %}
+    <h1 id="home-welcome-text">Welcome Back, {{user.first_name}}</h1>
+    
+    <h2>Status Updates</h2>
+    <div id="home-status-update-container" class="main_section">
+        <div id="home-status-update-add">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{status_form.status}}
+                {{status_form.user}}
+            <input class="button-active" type="submit" value = "Add Status">
+            </form>
+        </div>
+        <div id="home-status-update-list">
+            {% for status in statuses %}
+            <table class="table-container">
+                <tr>
+                    <td style="width:70%"><p>{{ status.status }}</p></td>
+                    <td class="small_text" style="text-align: right;">(Updated: {{ status.date_added }})</td>
+                </tr>
+            </table>
+            {% empty %}
+                <!-- No Status Updates Available -->
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if role == "Student" %}
+        <h2>Deadlines</h2>
+        <div id="home-deadlines-container" class="main_section">
+            {% if duedates|length != 0 %} 
+                <table id="home-deadlines-table" class="table-container">
+                    <tr>
+                        <th>Course:</th>
+                        <th>Type:</th>
+                        <th>Title:</th>
+                        <th>Description:</th>
+                        <th>Due:</th>
+                        <th>File:</th>
+                    </tr>
+                    {% for due in duedates %}
+                    <tr>
+                        <td><p>{{ due.course_id }}</p></td>
+                        <td><p>{{ due.type }}</p></td>
+                        <td><p>{{ due.title }}</p></td>
+                        <td><p>{{ due.description }}</p></td>
+                        <td><p>{{ due.due_date }}</p></td>
+                        <td><p>{{ due.file }}</p></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>No Deadlines</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <table id="home-deadlines-table">
+                    <tr>No Deadlines</tr>
+                </table>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if role == "Teacher" %}
+        <h2>Pending Registrations</h2>
+        <div id="home-registrations-container" class="main_section">
+            {% if pending_registrations|length != 0 %} 
+                <table id="home-deadlines-table" class="table-container">
+                    <tr>
+                        <th>Student:</th>
+                        <th>Course:</th>
+                        <th>Status:</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    {% for registration in pending_registrations %}
+                    <tr>
+                        <td><p>{{ registration.student }}</p></td>
+                        <td><p>{{ registration.course }}</p></td>
+                        <td><p>{{ registration.status }}</p></td>
+                        <td><p><a href="{% url 'registration_change' registration.pk 'APPROVED'%}"><button type="button" class="button-active" style="margin:0">Accept</button></a></p></td>
+                        <td><p><a href="{% url 'registration_change' registration.pk 'DECLINED'%}"><button type="button" class="button-active" style="margin:0">Decline</button></a></p></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td><p>No Pending Student Registrations</p></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <table id="home-deadlines-table">
+                    <tr><p>No Pending Student Registrations</p></tr>
+                </table>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

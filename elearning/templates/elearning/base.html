@@ -1,0 +1,86 @@
+{% include "./header.html" %}
+
+<div id="body-container" style="display: flex; flex-direction: row; width:100%;">
+    <div id="left-nav-bar" style="min-width:250px">
+        <div style="padding: 10px;border-right:1px solid #48752C; height: 100%; display:flex; flex-direction:column;">
+            {% if role == "Teacher" %}
+                <!-- <h2 style="margin-bottom: 0;">{{ role }} Menu</h2> -->
+                <h4 style="margin-bottom: 0;">Courses</h4>
+                <div id="sidebar-courses-container">
+                    <ul style="margin-bottom: 5px; margin-top:5px">
+                        {% for course in courses %}
+                            <li><p><a href="/course_view/{{course.pk}}">{{course.code}} - {{course.name}}</a></p></li>
+                        {% endfor %}
+                    </ul>
+                    <a href="/course_add/"><button class="button-active">Add Course</button></a>
+                </div>
+
+                <h4 style="margin-bottom: 0;">Student Directory</h4>
+                <div id="sidebar-studentdirectory-container" style="margin-bottom: 5px; margin-top:5px">
+                    {% if students|length == 0 %}
+                        <select style="width: 100%;" class="side-dropdown">
+                            <option value="none">No students</option>
+                        </select>
+                        <button disabled="True" class="button-active">Go</button>
+                    {% else %}
+                            <select name="students" id="studentsDropdown" class="side-dropdown">
+                                {% for student in students %}
+                                <option value="{{ student.pk }}">{{student.last_name}}, {{student.first_name}} ({{ student }})</option>
+                                {% endfor %}
+                            </select>
+                            <button onclick="userListSubmit('studentsDropdown')" class="button-active" style="align-self:left;">Go</button>
+                    {% endif %}
+                </div>
+
+                <h4 style="margin-bottom: 0">Teacher Directory</h4>
+                <div id="sidebar-teacherdirectory-container" style="margin-bottom: 5px; margin-top:5px">
+                    {% if teachers|length == 0 %}
+                        <select class="side-dropdown">
+                            <option value="none">No teachers</option>
+                        </select>
+                        <button disabled="True" class="button-active">Go</button>
+                    {% else %}
+                        <select name="teachers" id="teachersDropdown" class="side-dropdown">
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher.pk }}">{{teacher.last_name}}, {{teacher.first_name}} ({{ teacher }})</option>
+                            {% endfor %}
+                        </select>
+                        <button onclick="userListSubmit('teachersDropdown')" class="button-active">Go</button>
+                    {% endif %}
+                </div>
+
+                <a href="/chat/TeacherChat"><h4 style="margin-bottom: 0">Teacher Chat Room</h4></a>
+            {% endif %}
+
+            {% if role == "Student" %}
+                <!-- <h2 style="margin-bottom: 0;">{{ role }} Menu</h1> -->
+                <h4 style="margin-bottom: 0;">My Courses</h4>
+                <ul style="margin-bottom: 5px; margin-top:5px">
+                    {% for enrolled in courses_enrolled %}
+                        <li><p><a href="/course_view/{{enrolled.course.pk}}">{{enrolled.course.code}} - {{enrolled.course.name}}</a></p></li>
+                    {% endfor %}
+                </ul>
+                <h4 style="margin-bottom: 0;">All Courses</h4>
+                <ul style="margin-bottom: 5px; margin-top:5px">
+                    {% for course in courses %}
+                        <li><p><a href="/course_view/{{course.pk}}">{{course.code}} - {{course.name}}</a></p></li>
+                    {% endfor %}
+                </ul>
+                <a href="/chat/StudentChat"><h4 style="margin-bottom: 0">Student Chat Room</h4></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="Main_content" style="width:80%; margin-left: 20px; margin-right: 20px;">
+        {% block content %}Didn't render content{% endblock %}
+    </div>
+</div>
+
+<script>
+    function userListSubmit(elementid){
+        link = '/user_view/' + document.getElementById(elementid).value;
+        window.location = link;
+    }
+</script>
+
+{% include "./footer.html" %}

@@ -1,0 +1,67 @@
+{% extends "./base.html" %}
+
+{% block content %}
+    <h1>Add A New Course</h1>
+        <form action="/course_add/" method="post" class="form">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td><p>Course Code:</p></td>
+                </tr>
+                <tr>
+                    <td>{{ form.code }}</td>
+                </tr>
+                <tr>
+                    <td><p>Course Name:</p></td>
+                </tr>
+                <tr>
+                    <td>{{ form.name }}</td>
+                </tr>
+                <tr>
+                    <td><p>Course Description:</p></td>
+                </tr>
+                <tr>
+                    <td>{{ form.description }}</td>
+                </tr>
+                <tr>
+                    <td><p>Course Length (in weeks):</p></td>
+                </tr>
+                <tr>
+                    <td>{{ form.length_in_weeks }}</td>
+                </tr>
+                <tr>
+                    <td><p>Course Semester:</p></td>
+                </tr>
+                <tr>
+                    <td>{{ form.semester }}</td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value = "Submit" class="button-active"></td>
+                </tr>
+            </table>
+        </form>
+
+        <style>
+            textarea, input[name=length_in_weeks], select[name=semester]  {
+                margin: 5px;
+                padding: 10px;
+                border: 2px solid #48752C;
+                border-radius: 10px;
+                text-align: left;
+                outline: none;
+            }
+            input[name=code] {
+                text-align: left;
+            }
+            input[name=name] {
+                text-align: left;
+            }
+            td {
+                border: none
+            }
+            table {
+                width: 100%
+            }
+        </style>
+
+{% endblock %}

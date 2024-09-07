@@ -1,0 +1,14 @@
+{% include "./header.html" %}
+
+    <div id="login-body">
+        <h2>Login</h2>
+        <form id="login-form" method="post" action="/login/">
+            {% csrf_token %}
+                <input id="login-un" type="text" name="username" placeholder="Username"/>
+                <input id="login-pw" type="password" name="password" placeholder="Password"/>
+                <input id="login-sub" type="submit" value="Submit">
+        </form>
+        <div id="login-register-link">Don't have an account? Click <a href="/register/">here</a> to register.</div>
+    </div>
+
+{% include "./footer.html" %}

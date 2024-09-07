@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../static/css/elearning.css?{% now "U" %}">
+    <title>eLearning Website</title>
+</head>
+<body>
+    <div id="header-container" style="background-color: white; min-width:650px;" >
+            <img id="header-logo" src="../../static/images/logo.png" id="logo" alt="website logo" onclick="location.href='/'" style="cursor:pointer;">
+            <div id="header-title" onclick="location.href='/'" style="cursor:pointer;">eLearning Site</div>
+
+        {% if user.is_authenticated %}
+        <div id="login-option" style="display: flex; flex-direction: row; align-items: center">
+            {% if user_image %}
+            <img src="/media/{{user_image}}" style="height:80%; margin: 10px">
+            {% else %}
+            <img src="../../static/images/placeholder-profile.jpg" style="height:80%; margin: 10px">
+            {%endif%}
+            <div>
+                {% if role %}
+                <div style="font-weight: bold; margin-bottom: 5px">{{ role }}</div>
+                {% endif %}
+                {% if user.first_name %}
+                    <div>{{user.first_name}} {{user.last_name}}</div>
+                {% else %}
+                    <div>{{user}}</div>
+                {% endif %}
+                <div style="font-size: 10px; margin-top: 10px;"><a href="/logout">Logout</a> <a href="/change_password">Change Password</a></div>
+            </div>
+        </div>
+        {% else %}
+        <div id="login-option">
+        </div>
+        {% endif %}
+    </div>
